@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="ko" class="theme-light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>볼트테크 미디어 모니터링 일일보고서 2026-06-11</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script>Chart.defaults.animation = false;</script>
+  <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { interpolate-size: allow-keywords; }
+
+    /* ===== bolttech CI : deep navy #15104A + cyan #2CD5C4 ===== */
+    html.theme-dark {
+      --bg: #0B0A1E; --surface: #151432; --surface-hover: #1C1B40;
+      --border: rgba(124,222,220,0.10);
+      --text: #EDEDF5; --text-secondary: #9A98B8;
+      --accent: #2CD5C4; --accent-secondary: #7C7AF0;
+      --positive: #2CD58F; --negative: #f43f5e; --warning: #f59e0b;
+      --navy: #EDEDF5; --cyan-soft: rgba(44,213,196,0.12);
+    }
+    html.theme-light {
+      --bg: #FAFAFC; --surface: #FFFFFF; --surface-hover: #F3F4F8;
+      --border: rgba(21,16,74,0.09);
+      --text: #15104A; --text-secondary: #6B6990;
+      --accent: #00A395; --accent-secondary: #15104A;
+      --positive: #059669; --negative: #e11d48; --warning: #d97706;
+      --navy: #15104A; --cyan-soft: rgba(44,213,196,0.16);
+    }
+
+    body {
+      font-family: 'Noto Sans KR', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg); color: var(--text);
+      line-height: 1.6; -webkit-font-smoothing: antialiased;
+      letter-spacing: -0.01em;
+      transition: background 0.3s, color 0.3s;
+      scrollbar-gutter: stable;
+    }
+    h1,h2,h3,h4,h5,h6 { color: var(--text); letter-spacing: -0.03em; line-height: 1.15; text-wrap: balance; }
+    h1 { font-weight: 800; font-size: 2.5rem; }
+    h2 { font-weight: 700; font-size: 2rem; }
+    h3 { font-weight: 600; font-size: 1.5rem; }
+    body, p, li, td, th, span, label { font-weight: 400; font-size: 1rem; }
+    p,li,td,th,span,label { color: var(--text); }
+    .text-secondary { color: var(--text-secondary); }
+
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 24px;
+      transition: box-shadow 0.2s ease;
+    }
+    .card:hover { box-shadow: 0 0 0 1px var(--border), 0 8px 16px rgba(21,16,74,0.10); }
+
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .animate { animation: fadeInUp 0.6s ease-out both; }
+    .animate.delay-1 { animation-delay: 0.1s; }
+    .animate.delay-2 { animation-delay: 0.2s; }
+    .animate.delay-3 { animation-delay: 0.3s; }
+    .animate.delay-4 { animation-delay: 0.4s; }
+    .animate.delay-5 { animation-delay: 0.5s; }
+
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
+
+    @media print {
+      body { background: white !important; color: black !important; }
+      .viz-menu { display: none !important; }
+      .reveal { opacity: 1 !important; transform: none !important; }
+      .card { break-inside: avoid; border: 1px solid #ddd; box-shadow: none; }
+      * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    }
+    @page { margin: 0.7in; }
+
+    .viz-menu { position: fixed; top: 16px; right: 16px; z-index: 9999; }
+    .viz-menu-toggle {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--text); cursor: pointer; display: flex;
+      align-items: center; justify-content: center;
+      backdrop-filter: blur(12px); transition: all 0.2s;
+    }
+    .viz-menu-toggle:hover { background: var(--surface-hover); }
+    .viz-menu-dropdown {
+      position: absolute; top: 52px; right: 0; min-width: 200px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 8px;
+      opacity: 0; visibility: hidden; transform: translateY(-8px);
+      transition: all 0.2s; backdrop-filter: blur(16px);
+    }
+    .viz-menu-dropdown.open { opacity: 1; visibility: visible; transform: translateY(0); }
+    .viz-menu-dropdown button {
+      width: 100%; padding: 10px 14px; border: none; border-radius: 8px;
+      background: transparent; color: var(--text); font-size: 14px;
+      font-family: inherit; cursor: pointer; text-align: left;
+      display: flex; align-items: center; gap: 10px; transition: background 0.15s;
+    }
+    .viz-menu-dropdown button:hover { background: var(--surface-hover); }
+
+    .skip-to-content {
+      position: absolute; top: -40px; left: 6px; background: var(--accent);
+      color: white; padding: 8px 12px; text-decoration: none;
+      border-radius: 4px; opacity: 0; pointer-events: none;
+      transition: all 0.2s; z-index: 10000;
+    }
+    .skip-to-content:focus { top: 6px; opacity: 1; pointer-events: auto; }
+
+    details { overflow: hidden; }
+    details summary { cursor: pointer; list-style: none; }
+    details summary::-webkit-details-marker { display: none; }
+
+    /* ===== report styles ===== */
+    .container { max-width: 1180px; margin: 0 auto; padding: 56px 32px 80px; }
+    section { margin-bottom: 56px; }
+
+    .report-header { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px; padding-bottom: 28px; border-bottom: 2px solid var(--cyan-soft); margin-bottom: 48px; }
+    .brand-logo { display: flex; align-items: baseline; gap: 2px; font-family: 'Inter','Noto Sans KR',sans-serif; margin-bottom: 14px; }
+    .brand-logo .b { font-weight: 800; font-size: 1.5rem; color: var(--navy); letter-spacing: -0.04em; }
+    .brand-logo .t { font-weight: 300; font-size: 1.5rem; color: var(--navy); letter-spacing: -0.03em; }
+    .brand-logo .spark { width: 9px; height: 9px; border-radius: 2px; background: #2CD5C4; margin-left: 1px; align-self: center; }
+    .report-kicker { display: inline-flex; align-items: center; gap: 8px; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+    .report-kicker .dot { width: 8px; height: 8px; border-radius: 50%; background: #2CD5C4; }
+    .report-meta { font-size: 0.92rem; color: var(--text-secondary); margin-top: 12px; }
+    .report-date-badge { background: var(--navy); border-radius: 12px; padding: 14px 22px; text-align: center; }
+    html.theme-light .report-date-badge .d, html.theme-light .report-date-badge .l { color: #FFFFFF; }
+    html.theme-dark .report-date-badge { background: var(--surface); border: 1px solid var(--border); }
+    .report-date-badge .d { font-size: 1.45rem; font-weight: 800; line-height: 1.2; color: #fff; }
+    .report-date-badge .l { font-size: 0.8rem; color: #2CD5C4; font-weight: 600; }
+
+    .section-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+    .section-title { margin-bottom: 8px; }
+    .section-desc { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 24px; max-width: 780px; }
+
+    .kpi-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+    .kpi-card { background: var(--surface); border: 1px solid var(--border); border-top: 3px solid #2CD5C4; border-radius: 8px; padding: 24px; transition: box-shadow 0.2s; }
+    .kpi-card:hover { box-shadow: 0 8px 16px rgba(21,16,74,0.10); }
+    .kpi-label { font-size: 0.82rem; font-weight: 500; color: var(--text-secondary); margin-bottom: 8px; }
+    .kpi-value { font-size: 2.2rem; font-weight: 800; color: var(--text); line-height: 1.1; letter-spacing: -0.03em; }
+    .kpi-value.accent { color: var(--accent); }
+    .kpi-delta { font-size: 0.82rem; margin-top: 8px; font-weight: 500; }
+    .kpi-delta.up { color: var(--positive); }
+    .kpi-delta.down { color: var(--negative); }
+    .kpi-delta.flat { color: var(--text-secondary); }
+
+    .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 40px; }
+    .chart-card h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 4px; }
+    .chart-card .sub { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 20px; }
+    .chart-box { position: relative; height: 360px; }
+    .chart-box.tall { height: 400px; }
+    .chart-box.short { height: 300px; }
+    .chart-grid { display: grid; gap: 20px; grid-template-columns: 1fr 1fr; }
+    .chart-grid .span2 { grid-column: span 2; }
+
+    .insight-strip { display: flex; gap: 12px; align-items: flex-start; background: var(--cyan-soft); border: 1px solid var(--border); border-left: 3px solid #2CD5C4; border-radius: 8px; padding: 16px 20px; margin-top: 20px; }
+    .insight-strip svg { flex-shrink: 0; margin-top: 3px; color: var(--accent); }
+    .insight-strip p { font-size: 0.92rem; color: var(--text); }
+
+    table.comp-table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+    table.comp-table th { text-align: left; font-weight: 600; color: var(--text-secondary); font-size: 0.8rem; letter-spacing: 0.04em; text-transform: uppercase; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+    table.comp-table td { padding: 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    table.comp-table tr:last-child td { border-bottom: none; }
+    table.comp-table .num { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+    .tag { display: inline-block; font-size: 0.74rem; font-weight: 600; padding: 3px 10px; border-radius: 999px; line-height: 1.5; }
+    .tag.core { background: var(--cyan-soft); color: var(--accent); }
+    .tag.zero { background: rgba(107,105,144,0.12); color: var(--text-secondary); }
+    .bar-track { background: var(--surface-hover); border-radius: 999px; height: 8px; min-width: 80px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #2CD5C4, #00A395); }
+
+    .news-list { display: grid; gap: 12px; }
+    .news-item { display: block; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px 24px; text-decoration: none; transition: box-shadow 0.2s, background 0.2s; }
+    .news-item:hover { box-shadow: 0 8px 16px rgba(21,16,74,0.10); background: var(--surface-hover); }
+    .news-item .nt { font-weight: 600; font-size: 1rem; color: var(--text); margin-bottom: 6px; line-height: 1.45; }
+    .news-item .ns { font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 10px; line-height: 1.55; }
+    .news-item .nm { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 0.78rem; color: var(--text-secondary); }
+    .kw-pill { display: inline-block; font-size: 0.74rem; font-weight: 600; padding: 2px 10px; border-radius: 999px; background: var(--cyan-soft); color: var(--accent); }
+    .kw-pill.warn { background: rgba(217,119,6,0.12); color: var(--warning); }
+    .press-name { font-weight: 500; }
+
+    .filter-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+    .filter-btn { border: 1px solid var(--border); background: var(--surface); color: var(--text-secondary); font-family: inherit; font-size: 0.82rem; font-weight: 500; padding: 7px 14px; border-radius: 999px; cursor: pointer; transition: all 0.15s; }
+    .filter-btn:hover { background: var(--surface-hover); color: var(--text); }
+    .filter-btn.active { background: var(--navy); border-color: var(--navy); color: #fff; }
+    html.theme-dark .filter-btn.active { background: #2CD5C4; border-color: #2CD5C4; color: #0B0A1E; }
+
+    .takeaway-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+    .takeaway-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 24px; }
+    .takeaway-card .ico { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; background: var(--cyan-soft); color: var(--accent); }
+    .takeaway-card .ico.warn { background: rgba(217,119,6,0.12); color: var(--warning); }
+    .takeaway-card .ico.pos { background: rgba(5,150,105,0.1); color: var(--positive); }
+    .takeaway-card h4 { font-size: 1.02rem; font-weight: 600; margin-bottom: 8px; }
+    .takeaway-card p { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.65; }
+
+    .footer-note { font-size: 0.82rem; color: var(--text-secondary); border-top: 1px solid var(--border); padding-top: 24px; line-height: 1.8; }
+
+    @media (max-width: 860px) {
+      .chart-grid { grid-template-columns: 1fr; }
+      .chart-grid .span2 { grid-column: span 1; }
+    }
+    @media (max-width: 768px) {
+      .container { padding: 32px 16px 64px; }
+      .chart-card { padding: 24px; }
+    }
+    @media (max-width: 375px) {
+      body { overflow-x: hidden; }
+      .kpi-value { font-size: 2rem; }
+      .card, .kpi-card { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-to-content">본문 바로가기</a>
+
+  <!-- MENU -->
+  <div class="viz-menu">
+    <button class="viz-menu-toggle" onclick="toggleMenu()" aria-label="Menu">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="3" y1="5" x2="17" y2="5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="15" x2="17" y2="15"/>
+      </svg>
+    </button>
+    <div class="viz-menu-dropdown" id="vizMenuDropdown">
+      <button onclick="cycleTheme()"><span id="themeIcon">☀️</span><span id="themeLabel">Light</span></button>
+      <button onclick="downloadImage()"><span>📥</span><span>Download PNG</span></button>
+      <button onclick="window.print()"><span>🖨️</span><span>Print / PDF</span></button>
+    </div>
+  </div>
+
+  <main id="main-content" role="main">
+    <div class="container">
+
+      <!-- HEADER -->
+      <section class="report-header animate" role="banner">
+        <div>
+          <div class="brand-logo" aria-label="bolttech"><span class="b">bolt</span><span class="spark"></span><span class="t">tech</span></div>
+          <div class="report-kicker"><span class="dot"></span>TeamCookie · 전략팀 · 미디어 모니터링</div>
+          <h1>볼트테크 일일보고서</h1>
+          <p class="report-meta">파트너사: 볼트테크 (bolttech) · 데이터 출처: 파트너사 모니터링 기록(Notion) · 금일 수치는 06/11 09:30 수집분 기준</p>
+        </div>
+        <div class="report-date-badge">
+          <div class="d">2026.06.11</div>
+          <div class="l">목요일 · DAILY REPORT</div>
+        </div>
+      </section>
+
+      <!-- KPI -->
+      <section aria-label="핵심 지표">
+        <div class="kpi-grid">
+          <div class="kpi-card animate delay-1">
+            <div class="kpi-label">금일 수집 기사 (09:30 기준)</div>
+            <div class="kpi-value accent"><span data-count="179">0</span>건</div>
+            <div class="kpi-delta flat">19개 키워드에서 수집 진행 중</div>
+          </div>
+          <div class="kpi-card animate delay-2">
+            <div class="kpi-label">전일(06/10) 전체 기사</div>
+            <div class="kpi-value"><span data-count="191">0</span>건</div>
+            <div class="kpi-delta down">▼ 6.4% vs 06/09 (204건)</div>
+          </div>
+          <div class="kpi-card animate delay-3">
+            <div class="kpi-label">이번 주 누적 (06/08~)</div>
+            <div class="kpi-value"><span data-count="758">0</span>건</div>
+            <div class="kpi-delta up">▲ 6.9% vs 지난주 동기간(709건)</div>
+          </div>
+          <div class="kpi-card animate delay-4">
+            <div class="kpi-label">경쟁사 키워드 · 금일</div>
+            <div class="kpi-value"><span data-count="32">0</span>건</div>
+            <div class="kpi-delta up">▲ 한화손보 12 · 삼성케어 10 · 카카오페이손보 9</div>
+          </div>
+          <div class="kpi-card animate delay-5">
+            <div class="kpi-label">메일링 큐레이션 · 주간</div>
+            <div class="kpi-value"><span data-count="28">0</span>건</div>
+            <div class="kpi-delta flat">금일 0건 (미체크) · 지난주 32건</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- NEWS INTEREST TREND -->
+      <section data-reveal aria-label="뉴스 관심도 변화">
+        <div class="section-label">News Interest</div>
+        <h2 class="section-title">뉴스 관심도 변화</h2>
+        <p class="section-desc">등록 키워드 28종(자사·경쟁사·시장·기술) 기준 일별 수집 기사량. 이번 주는 지난주 동기간 대비 +6.9%로 보험·보안 이슈가 꾸준히 증가세입니다.</p>
+        <div class="chart-grid">
+          <div class="chart-card span2">
+            <h3>일별 수집 기사량 추이 (06/01 ~ 06/11)</h3>
+            <div class="sub">지난주(회색) vs 이번 주(시안) · 금일(네이비)은 09:30까지 수집분</div>
+            <div class="chart-box" role="img" aria-label="6월 1일부터 11일까지 일별 수집 기사량 막대 차트. 지난주 평일 평균 176건, 이번 주 06월 9일 204건 최고, 금일 179건">
+              <canvas id="trendChart"></canvas>
+            </div>
+            <div class="insight-strip">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              <p><strong>금일 관심도 견인 이슈</strong>: 글로벌 보험 컨퍼런스 KIIC 개막(27개국 1,300명 · 사이버보안/AI 의제), 신한은행 무료 피싱보험, 디지털보험사 1분기 실적 보도가 보험플랫폼(27건)·개인정보보호(23건)·사이버보안(19건) 키워드를 끌어올림.</p>
+            </div>
+          </div>
+          <div class="chart-card">
+            <h3>핵심 경쟁사 일별 추이 (이번 주)</h3>
+            <div class="sub">경쟁사 키워드 기사 수 · 06/08 ~ 06/11</div>
+            <div class="chart-box short" role="img" aria-label="핵심 경쟁사 일별 기사 추이 선 차트. 한화손해보험 금일 12건, 삼성케어플러스 10건, 카카오페이손해보험 9건으로 모두 상승">
+              <canvas id="compTrendChart"></canvas>
+            </div>
+          </div>
+          <div class="chart-card">
+            <h3>금일 키워드별 수집 현황</h3>
+            <div class="sub">06/11 09:30 기준 · 총 179건 (상위 12개)</div>
+            <div class="chart-box short" role="img" aria-label="금일 키워드별 기사 수 가로 막대 차트. 보험플랫폼 27건, 개인정보보호 기술 23건, 사이버보안 19건 순">
+              <canvas id="kwChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- COMPETITOR -->
+      <section data-reveal aria-label="경쟁사 현황">
+        <div class="section-label">Competitive Landscape</div>
+        <h2 class="section-title">경쟁사 현황</h2>
+        <p class="section-desc">노션 키워드 표에 등록된 핵심 경쟁사 8개 키워드 기준 집계입니다. 금일은 경쟁사 보도가 32건으로 주간 최다 — 한화손보(S&P 등급 상향·KIIC 공동 호스트)와 카카오페이손보(1분기 실적)가 동시에 뉴스 사이클을 탔습니다.</p>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <h3>경쟁사 키워드 주간 기사량</h3>
+            <div class="sub">06/08 ~ 06/11 누적 · 총 95건</div>
+            <div class="chart-box tall" role="img" aria-label="경쟁사 키워드 주간 기사량 가로 막대 차트. 한화손해보험 42건, 삼성케어플러스 37건, 카카오페이손해보험 15건, 애플케어플러스 1건">
+              <canvas id="compChart"></canvas>
+            </div>
+          </div>
+          <div class="chart-card">
+            <h3>경쟁사별 금일 핵심 이슈</h3>
+            <div class="sub">금일 기사 수 및 주간 비중</div>
+            <table class="comp-table">
+              <thead><tr><th>경쟁사</th><th class="num">금일</th><th class="num">주간</th><th style="width:24%">주간 비중</th></tr></thead>
+              <tbody>
+                <tr><td><strong>한화손해보험</strong><br><span style="font-size:0.8rem;color:var(--text-secondary)">S&P 'A+' 상향 · KIIC 공동 호스트</span></td><td class="num">12</td><td class="num">42</td><td><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div></td></tr>
+                <tr><td><strong>삼성케어플러스</strong><br><span style="font-size:0.8rem;color:var(--text-secondary)">비스포크 AI 일반형 + 구독 결합 판촉</span></td><td class="num">10</td><td class="num">37</td><td><div class="bar-track"><div class="bar-fill" style="width:88%"></div></div></td></tr>
+                <tr><td><strong>카카오페이손해보험</strong><br><span style="font-size:0.8rem;color:var(--text-secondary)">역대 최대 분기 매출 · 장기보험 안착</span></td><td class="num">9</td><td class="num">15</td><td><div class="bar-track"><div class="bar-fill" style="width:36%"></div></div></td></tr>
+                <tr><td><strong>애플케어플러스</strong></td><td class="num">1</td><td class="num">1</td><td><div class="bar-track"><div class="bar-fill" style="width:3%"></div></div></td></tr>
+                <tr><td><span style="color:var(--text-secondary)">어슈어런트 · 커버지니어스 · LGU+폰안심 · 안심체인지플러스</span></td><td class="num">0</td><td class="num">0</td><td><span class="tag zero">이번 주 미등장</span></td></tr>
+              </tbody>
+            </table>
+            <div class="insight-strip">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+              <p>디바이스 보호 직접 경쟁군(어슈어런트·커버지니어스·폰안심)은 이번 주 보도 0건 — 국내 경쟁 무게중심이 <strong>손보사·제조사 케어 프로그램</strong>으로 쏠리는 중.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TODAY'S TOP NEWS -->
+      <section data-reveal aria-label="금일 주요 기사">
+        <div class="section-label">Today's Briefing</div>
+        <h2 class="section-title">금일 주요 기사 요약</h2>
+        <p class="section-desc">금일 수집 179건 중 볼트테크 비즈니스(디바이스 보호·임베디드 보험·가전 구독) 유관도가 높은 기사를 선별했습니다.</p>
+        <div class="filter-bar" role="toolbar" aria-label="기사 필터">
+          <button class="filter-btn active" data-filter="all" onclick="filterNews(this)">전체</button>
+          <button class="filter-btn" data-filter="comp" onclick="filterNews(this)">경쟁사</button>
+          <button class="filter-btn" data-filter="market" onclick="filterNews(this)">시장·업계</button>
+          <button class="filter-btn" data-filter="biz" onclick="filterNews(this)">비즈니스 유관</button>
+        </div>
+        <div class="news-list" id="newsList">
+          <a class="news-item" data-cat="market" href="https://www.insnews.co.kr/news/articleView.html?idxno=9" target="_blank" rel="noopener">
+            <div class="nt">"보험산업의 미래 논하다" 글로벌 보험 컨퍼런스 '제3회 KIIC' 개막</div>
+            <div class="ns">27개국 1,300명 보험 전문가 서울 집결. 자율주행·사이버보안·생성형 AI 등 신기술 리스크를 보험산업 신성장 동력으로 흡수하는 방안 논의 — 삼성화재·한화손보 공동 호스트.</div>
+            <div class="nm"><span class="press-name">한국보험신문</span><span class="kw-pill">사이버보험</span><span class="kw-pill">한화손해보험</span></div>
+          </a>
+          <a class="news-item" data-cat="comp" href="http://www.babytimes.co.kr/news/articleView.html?idxno=" target="_blank" rel="noopener">
+            <div class="nt">한화손해보험, S&P 신용등급 'A+' 상향…글로벌 경쟁력 확보</div>
+            <div class="ns">글로벌 신용평가 상향을 계기로 해외 시장 진출 가속 — 인니 리포손보 실적 개선(전일 보도)에 이어 글로벌 서사를 강화하는 중.</div>
+            <div class="nm"><span class="press-name">베이비타임즈</span><span class="kw-pill warn">경쟁사</span><span class="kw-pill">한화손해보험</span></div>
+          </a>
+          <a class="news-item" data-cat="comp" href="https://n.news.naver.com/mnews/article/421/0008997936" target="_blank" rel="noopener">
+            <div class="nt">카카오페이손보 "미니보험 넘어 장기보험 안착…외형·내실 다 잡았다"</div>
+            <div class="ns">역대 최대 분기 매출 달성. 디지털보험사 4곳 합산 1분기 324억 적자 속에서 적자 폭 25% 축소 — 디지털 보험 시장의 수익화 경쟁 본격화.</div>
+            <div class="nm"><span class="press-name">뉴스1</span><span class="kw-pill warn">경쟁사</span><span class="kw-pill">카카오페이손해보험</span></div>
+          </a>
+          <a class="news-item" data-cat="comp" href="http://www.4th.kr/news/articleView.html?idxno=2113017" target="_blank" rel="noopener">
+            <div class="nt">삼성전자, 중가형 로봇청소기 '비스포크 AI 스팀' 일반형 투입…구독 결합 판촉</div>
+            <div class="ns">출고가 141만~159만원, 올인원 2.0 구독 고객에 12개월 구독료 지원 — 가전 구독과 케어 서비스를 묶는 삼성의 락인 전략 지속.</div>
+            <div class="nm"><span class="press-name">포쓰저널 외</span><span class="kw-pill warn">경쟁사</span><span class="kw-pill">삼성케어플러스</span><span class="kw-pill">가전 구독</span></div>
+          </a>
+          <a class="news-item" data-cat="biz" href="https://www.s-journal.co.kr/news/articleView.html" target="_blank" rel="noopener">
+            <div class="nt">신한은행, 기초연금 수급자에 '무료 보험'…보이스피싱 피해 최대 1,000만원 보장</div>
+            <div class="ns">착오송금 회수비용(300만원)·피싱/스미싱 피해(1,000만원) 보장을 은행 서비스에 무료 탑재 — 금융 채널 임베디드 보험 확산의 대표 사례.</div>
+            <div class="nm"><span class="press-name">S-저널 외 8개 매체</span><span class="kw-pill">피싱 스미싱 해킹</span><span class="kw-pill">임베디드보험 사례</span></div>
+          </a>
+          <a class="news-item" data-cat="biz" href="https://www.viva100.com/article/20260610500762" target="_blank" rel="noopener">
+            <div class="nt">북중미 월드컵 원정객 의료비 폭탄 피하려면…해외여행보험 보장 경쟁</div>
+            <div class="ns">카카오페이손보가 해외여행보험 의료비 보장을 최대 1억원으로 확대. 월드컵(06/12 개막) 특수로 여행보험 보도 증가 — 여행취소보험 키워드 유관.</div>
+            <div class="nm"><span class="press-name">브릿지경제</span><span class="kw-pill">여행취소보험</span><span class="kw-pill warn">경쟁사 활동</span></div>
+          </a>
+          <a class="news-item" data-cat="market" href="https://www.viva100.com/article/20260611500746" target="_blank" rel="noopener">
+            <div class="nt">픽셀까지 속였다…원본 없는 '간편청구' 파고든 생성형 AI 보험사기</div>
+            <div class="ns">스마트폰 촬영 이미지 기반 비대면 청구가 대세로 자리잡은 가운데 AI 위조 청구 급증 — 디바이스 보험 청구 프로세스의 신뢰 리스크 부상.</div>
+            <div class="nm"><span class="press-name">브릿지경제</span><span class="kw-pill">스마트폰 보험 서비스</span></div>
+          </a>
+          <a class="news-item" data-cat="market" href="https://www.asiatoday.co.kr/kn/view.php?key=20260611010" target="_blank" rel="noopener">
+            <div class="nt">디지털보험사, 1분기 또 적자…하나·신한ez손보 적자 폭 확대</div>
+            <div class="ns">디지털보험사 4곳 합산 당기순손실 324억원. 장기 보장성 보험으로 활로 모색 — 디지털 채널만으로는 수익화가 어렵다는 시장 신호.</div>
+            <div class="nm"><span class="press-name">아시아투데이</span><span class="kw-pill">보험플랫폼</span></div>
+          </a>
+          <a class="news-item" data-cat="biz" href="https://www.ezyeconomy.com/news/articleView.html" target="_blank" rel="noopener">
+            <div class="nt">칼라일이 점찍은 청호나이스…렌탈 강자 넘어 '라이프케어 플랫폼'으로</div>
+            <div class="ns">구독형 소비 확산으로 렌탈 시장 성장 국면 — 가전 구독·교체 서비스 시장에 글로벌 PE 자본 유입, 시장 재편 가능성.</div>
+            <div class="nm"><span class="press-name">이지경제</span><span class="kw-pill">가전 구독</span><span class="kw-pill">가전교체서비스</span></div>
+          </a>
+        </div>
+      </section>
+
+      <!-- PR TAKEAWAYS -->
+      <section data-reveal aria-label="PR 시사점">
+        <div class="section-label">PR Takeaways</div>
+        <h2 class="section-title">금일 시사점</h2>
+        <div class="takeaway-grid">
+          <article class="takeaway-card">
+            <div class="ico warn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <h4>자사 직접 보도 부재 + 키워드 노이즈</h4>
+            <p>'볼트테크' 키워드 주간 8건은 모두 동음·부분일치 노이즈로 자사 직접 보도는 사실상 0건. 검색 연산자 정제("볼트테크" 정확일치, 볼트테크코리아 강화)와 함께, KIIC 등 업계 어젠다에 편승한 기획 피칭으로 보도 모멘텀 창출이 필요합니다.</p>
+          </article>
+          <article class="takeaway-card">
+            <div class="ico">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            </div>
+            <h4>경쟁 무게중심: 손보사·제조사 케어 프로그램</h4>
+            <p>한화손보(글로벌 신용등급)·카카오페이손보(실적 서사)·삼성케어플러스(구독 결합)가 금일 32건으로 주간 최다. 반면 어슈어런트·커버지니어스 등 디바이스 보호 직접 경쟁군은 0건 — 차별화 메시지를 '글로벌 디바이스 보호 전문성'으로 잡을 여지가 큽니다.</p>
+          </article>
+          <article class="takeaway-card">
+            <div class="ico pos">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <h4>임베디드 보험·월드컵 특수 — 피칭 윈도우</h4>
+            <p>신한은행 무료 피싱보험(9개 매체), 카카오페이손보 여행보험 확대 등 임베디드 보험 보도가 급증. 월드컵 개막(06/12)과 맞물린 여행·디바이스 보호 수요 구간에서 볼트테크의 임베디드 보험 파트너십 스토리를 노출할 적기입니다.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- FOOTER -->
+      <section class="footer-note" role="contentinfo">
+        <strong>데이터 기준</strong> · 출처: TeamCookie 파트너사 모니터링 기록(Notion) — 전략팀 &gt; 볼트테크 · 등록 키워드 28종(자사 2 · 핵심 경쟁사 8 · 시장 13 · 기술 2 · 비즈니스 4 외) 일별 크롤링<br>
+        금일(06/11) 수치는 09:30 수집분 기준이며 일과 종료 후 증가할 수 있습니다. 06/06~07 주말 수치(163건)는 2일 합산입니다. 메일링 큐레이션은 이번 주 28건(06/08 9 · 06/09 9 · 06/10 3 · 금일 미체크), 일일 웹메일은 06/08~06/11 매일 발행되었습니다. 경쟁사 집계는 노션 등록 키워드 매칭 기준입니다.
+      </section>
+
+    </div>
+  </main>
+
+  <script>
+    // === Menu ===
+    function toggleMenu() {
+      var dropdown = document.getElementById('vizMenuDropdown');
+      if (dropdown) dropdown.classList.toggle('open');
+    }
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.viz-menu')) {
+        var dropdown = document.getElementById('vizMenuDropdown');
+        if (dropdown) dropdown.classList.remove('open');
+      }
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        var dropdown = document.getElementById('vizMenuDropdown');
+        if (dropdown) dropdown.classList.remove('open');
+      }
+    });
+
+    // === Theme ===
+    var savedTheme = localStorage.getItem('bt-viz-theme');
+    var currentTheme = savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    function applyTheme(t) {
+      document.documentElement.className = 'theme-' + t;
+      document.getElementById('themeIcon').textContent = t === 'dark' ? '🌙' : '☀️';
+      document.getElementById('themeLabel').textContent = t === 'dark' ? 'Dark' : 'Light';
+      localStorage.setItem('bt-viz-theme', t);
+      currentTheme = t;
+      if (typeof onThemeChange === 'function') onThemeChange();
+    }
+    function cycleTheme() { applyTheme(currentTheme === 'dark' ? 'light' : 'dark'); }
+    applyTheme(currentTheme);
+
+    // === Scroll Reveal ===
+    document.querySelectorAll('[data-reveal]').forEach(function(el) { el.classList.add('reveal'); });
+    var revealObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) { if (e.isIntersecting) { e.target.classList.add('visible'); revealObserver.unobserve(e.target); } });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.reveal').forEach(function(el) { revealObserver.observe(el); });
+
+    // === Number Counter ===
+    function animateCounters() {
+      document.querySelectorAll('[data-count]').forEach(function(el) {
+        if (el.dataset.counted) return;
+        el.dataset.counted = '1';
+        var target = parseFloat(el.dataset.count), prefix = el.dataset.prefix || '', suffix = el.dataset.suffix || '';
+        var start = performance.now(), duration = 1200;
+        (function tick(now) {
+          var p = Math.min((now - start) / duration, 1), eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = prefix + Math.round(target * eased).toLocaleString() + suffix;
+          if (p < 1) requestAnimationFrame(tick);
+        })(start);
+      });
+    }
+    var counterEl = document.querySelector('[data-count]');
+    if (counterEl) {
+      var cObs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) { if (e.isIntersecting) { animateCounters(); cObs.disconnect(); } });
+      }, { threshold: 0.3 });
+      cObs.observe(counterEl);
+    }
+
+    // === Download PNG ===
+    async function downloadImage() {
+      var menu = document.querySelector('.viz-menu');
+      menu.style.display = 'none';
+      try {
+        var url = await htmlToImage.toPng(document.body, { quality: 1, pixelRatio: 2, filter: function(n) { return !n.classList || !n.classList.contains('viz-menu'); } });
+        var a = document.createElement('a'); a.href = url;
+        a.download = document.title.replace(/\s+/g, '-').toLowerCase() + '.png'; a.click();
+      } catch(e) { console.error('Download failed:', e); }
+      menu.style.display = '';
+    }
+
+    // === News filter ===
+    function filterNews(btn) {
+      var f = btn.dataset.filter;
+      document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      document.querySelectorAll('#newsList .news-item').forEach(function(item) {
+        item.style.display = (f === 'all' || item.dataset.cat === f) ? 'block' : 'none';
+      });
+    }
+
+    // === Charts ===
+    var ChartManager = {
+      charts: new Map(),
+      safeInit: function(canvasId, config) {
+        if (typeof Chart === 'undefined') { console.error('Chart.js library not loaded'); return null; }
+        try {
+          if (this.charts.has(canvasId)) { this.charts.get(canvasId).destroy(); this.charts.delete(canvasId); }
+          var ctx = document.getElementById(canvasId);
+          if (!ctx) { console.error('Canvas element not found: ' + canvasId); return null; }
+          ctx.setAttribute('role', 'img');
+          if (!ctx.getAttribute('aria-label')) ctx.setAttribute('aria-label', 'Chart visualization');
+          var chart = new Chart(ctx, config);
+          this.charts.set(canvasId, chart);
+          return chart;
+        } catch (error) { console.error('Chart init failed for ' + canvasId + ':', error); return null; }
+      }
+    };
+
+    var chartsBuilt = false;
+    function getChartColors() {
+      var isDark = document.documentElement.classList.contains('theme-dark');
+      var s = getComputedStyle(document.documentElement);
+      return {
+        text: s.getPropertyValue('--text').trim(),
+        textSecondary: s.getPropertyValue('--text-secondary').trim(),
+        border: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(21,16,74,0.07)',
+        cyan: '#2CD5C4',
+        teal: s.getPropertyValue('--accent').trim(),
+        navy: isDark ? '#7C7AF0' : '#15104A',
+        warning: s.getPropertyValue('--warning').trim(),
+        grey: isDark ? 'rgba(255,255,255,0.18)' : 'rgba(21,16,74,0.16)'
+      };
+    }
+
+    function buildCharts() {
+      if (chartsBuilt) return;
+      if (typeof Chart === 'undefined') { console.error('Chart.js not loaded'); return; }
+      var c = getChartColors();
+      Chart.defaults.color = c.textSecondary;
+      Chart.defaults.font.family = "'Noto Sans KR','Inter',sans-serif";
+      Chart.defaults.font.size = 13;
+
+      // 1) Trend chart
+      var trendLabels = ['06/01','06/02','06/03','06/04','06/05','06/06~07*','06/08','06/09','06/10','06/11*'];
+      var trendData = [165, 196, 130, 218, 171, 163, 184, 204, 191, 179];
+      var trendColors = [c.grey,c.grey,c.grey,c.grey,c.grey,c.grey,c.cyan,c.cyan,c.cyan,c.navy];
+      ChartManager.safeInit('trendChart', {
+        type: 'bar',
+        data: {
+          labels: trendLabels,
+          datasets: [{ label: '수집 기사 수', data: trendData, backgroundColor: trendColors, borderRadius: 4, maxBarThickness: 56 }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false, animation: false,
+          layout: { padding: { top: 10, right: 10 } },
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: true, padding: 12, cornerRadius: 8,
+              callbacks: { afterLabel: function(ctx) {
+                if (ctx.dataIndex === 5) return '주말 2일 합산';
+                if (ctx.dataIndex === 9) return '09:30까지 수집분 (진행 중)';
+                return '';
+              } } }
+          },
+          scales: {
+            x: { ticks: { color: c.textSecondary, maxRotation: 0 }, grid: { display: false } },
+            y: { beginAtZero: true, ticks: { color: c.textSecondary }, grid: { color: c.border } }
+          }
+        }
+      });
+
+      // 2) Competitor daily trend
+      ChartManager.safeInit('compTrendChart', {
+        type: 'line',
+        data: {
+          labels: ['06/08','06/09','06/10','06/11'],
+          datasets: [
+            { label: '한화손해보험', data: [7, 18, 5, 12], borderColor: c.navy, backgroundColor: 'transparent', tension: 0.35, pointRadius: 4, pointBackgroundColor: c.navy, borderWidth: 2.5 },
+            { label: '삼성케어플러스', data: [6, 3, 18, 10], borderColor: c.cyan, backgroundColor: 'transparent', tension: 0.35, pointRadius: 4, pointBackgroundColor: c.cyan, borderWidth: 2.5 },
+            { label: '카카오페이손해보험', data: [3, 2, 1, 9], borderColor: c.warning, backgroundColor: 'transparent', tension: 0.35, pointRadius: 4, pointBackgroundColor: c.warning, borderWidth: 2.5 }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false, animation: false,
+          layout: { padding: 10 },
+          plugins: {
+            legend: { display: true, position: 'top', labels: { color: c.textSecondary, boxWidth: 12, font: { size: 12 } } },
+            tooltip: { enabled: true, padding: 12, cornerRadius: 8 }
+          },
+          scales: {
+            x: { ticks: { color: c.textSecondary }, grid: { display: false } },
+            y: { beginAtZero: true, ticks: { color: c.textSecondary, stepSize: 5 }, grid: { color: c.border } }
+          }
+        }
+      });
+
+      // 3) Today's keywords
+      ChartManager.safeInit('kwChart', {
+        type: 'bar',
+        data: {
+          labels: ['보험플랫폼','개인정보보호 기술','사이버보안','가전 구독','피싱 스미싱 해킹','개인정보보호 솔루션','한화손해보험','사이버보험','삼성케어플러스','카카오페이손해보험','스마트폰 보험 서비스','가전교체서비스'],
+          datasets: [{ label: '금일 기사 수', data: [27,23,19,15,13,13,12,12,10,9,8,7], backgroundColor: c.cyan, borderRadius: 4, maxBarThickness: 16 }]
+        },
+        options: {
+          indexAxis: 'y', responsive: true, maintainAspectRatio: false, animation: false,
+          layout: { padding: { right: 16 } },
+          plugins: { legend: { display: false }, tooltip: { enabled: true, padding: 12, cornerRadius: 8 } },
+          scales: {
+            x: { beginAtZero: true, ticks: { color: c.textSecondary, stepSize: 5 }, grid: { color: c.border } },
+            y: { ticks: { color: c.textSecondary, font: { size: 11.5 } }, grid: { display: false } }
+          }
+        }
+      });
+
+      // 4) Competitor weekly
+      ChartManager.safeInit('compChart', {
+        type: 'bar',
+        data: {
+          labels: ['한화손해보험','삼성케어플러스','카카오페이손해보험','애플케어플러스','어슈어런트','커버지니어스','LGU+ 폰안심','안심체인지플러스'],
+          datasets: [{
+            label: '주간 기사 수', data: [42, 37, 15, 1, 0, 0, 0, 0],
+            backgroundColor: [c.navy, c.cyan, c.teal, c.grey, c.grey, c.grey, c.grey, c.grey],
+            borderRadius: 4, maxBarThickness: 24
+          }]
+        },
+        options: {
+          indexAxis: 'y', responsive: true, maintainAspectRatio: false, animation: false,
+          layout: { padding: { right: 16 } },
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: true, padding: 12, cornerRadius: 8,
+              callbacks: { afterLabel: function(ctx) {
+                var notes = ['S&P A+ 상향 · KIIC 공동 호스트','가전 구독 결합 케어 프로그램','1분기 역대 최대 매출','국내 보도 미미','이번 주 미등장','이번 주 미등장','이번 주 미등장','이번 주 미등장'];
+                return notes[ctx.dataIndex];
+              } } }
+          },
+          scales: {
+            x: { beginAtZero: true, ticks: { color: c.textSecondary, stepSize: 10 }, grid: { color: c.border } },
+            y: { ticks: { color: c.textSecondary, font: { size: 12 } }, grid: { display: false } }
+          }
+        }
+      });
+
+      chartsBuilt = true;
+    }
+    function onThemeChange() { if (chartsBuilt) { chartsBuilt = false; buildCharts(); } }
+    document.addEventListener('DOMContentLoaded', buildCharts);
+    window.addEventListener('load', buildCharts);
+  </script>
+</body>
+</html>
