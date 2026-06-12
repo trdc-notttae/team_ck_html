@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>G마켓 '추노 2026 ver.' PR 측정·분석 보고서</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:#f4f6fa;color:#1a2332;line-height:1.6}
+.wrap{max-width:1080px;margin:0 auto;padding:32px 20px 64px}
+header{background:linear-gradient(135deg,#0b8a3e,#13c75a);color:#fff;border-radius:16px;padding:36px 40px;margin-bottom:28px}
+header h1{font-size:26px;margin-bottom:6px}
+header p{opacity:.92;font-size:14px}
+.badge{display:inline-block;background:rgba(255,255,255,.2);border-radius:20px;padding:3px 12px;font-size:12px;margin-right:6px;margin-top:10px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:28px}
+.kpi{background:#fff;border-radius:12px;padding:18px 20px;box-shadow:0 1px 4px rgba(20,40,80,.08)}
+.kpi .v{font-size:24px;font-weight:800;color:#0b8a3e}
+.kpi .l{font-size:12px;color:#6b7685;margin-top:2px}
+.kpi .d{font-size:11px;color:#9aa4b2}
+.card{background:#fff;border-radius:14px;padding:26px 28px;box-shadow:0 1px 4px rgba(20,40,80,.08);margin-bottom:24px}
+.card h2{font-size:18px;margin-bottom:4px;color:#0b3d20}
+.card .sub{font-size:12.5px;color:#7b8694;margin-bottom:18px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#eef3f9;text-align:left;padding:8px 10px;color:#3a4a5e;font-size:12px}
+td{padding:8px 10px;border-bottom:1px solid #eef1f5;vertical-align:top}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+.tag{border-radius:10px;padding:1px 9px;font-size:11.5px;font-weight:700}
+.tag.pos{background:#e3f7e9;color:#0b8a3e}.tag.neg{background:#fdeaea;color:#c0392b}.tag.neu{background:#eef1f5;color:#6b7685}
+.note{background:#fff8e1;border-left:4px solid #f0b429;border-radius:8px;padding:12px 16px;font-size:12.5px;color:#6b5b1e;margin-top:14px}
+.insight li{margin:8px 0 8px 18px;font-size:14px}
+.ext{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:760px){.ext{grid-template-columns:1fr}}
+.ext .box{border:1px solid #e3e9f1;border-radius:12px;padding:18px 20px}
+.ext h3{font-size:14.5px;color:#0b8a3e;margin-bottom:8px}
+.ext li{font-size:13px;margin:5px 0 5px 16px;color:#34414f}
+canvas{max-height:340px}
+footer{text-align:center;font-size:11.5px;color:#9aa4b2;margin-top:30px}
+</style></head><body><div class="wrap">
+
+<header>
+<h1>🎬 G마켓 '추노 2026 ver.' 유튜브 PR 측정·분석 보고서</h1>
+<p>빅스마일데이 캠페인 영상 · 업로드 2026-04-30 · 분석 기준일 2026-06-12</p>
+<div><span class="badge">채널: G마켓</span><span class="badge">영상 길이 1:57</span><span class="badge">캠페인: 빅스마일데이 (5/6~5/19)</span><span class="badge">출연: 장혁·박성웅 / 연출: 장항준</span></div>
+</header>
+
+<div class="kpis">
+<div class="kpi"><div class="v">1,573,597</div><div class="l">누적 조회수</div><div class="d">실측 (6/12)</div></div>
+<div class="kpi"><div class="v">14,563</div><div class="l">좋아요</div><div class="d">조회수 대비 0.93%</div></div>
+<div class="kpi"><div class="v">2,149</div><div class="l">총 댓글 (대댓글 포함)</div><div class="d">최상위 댓글 1,911개</div></div>
+<div class="kpi"><div class="v">1.06%</div><div class="l">참여율 (ER)</div><div class="d">(좋아요+댓글)/조회수</div></div>
+<div class="kpi"><div class="v">66.1%</div><div class="l">댓글 긍정 비율</div><div class="d">부정 1.2% · 중립 32.8%</div></div>
+<div class="kpi"><div class="v">26,850</div><div class="l">댓글 좋아요 합계</div><div class="d">2차 공감 확산 지표</div></div>
+</div>
+
+<div class="card">
+<h2>📈 일자별 조회수 추이 (추정 + 실측)</h2>
+<div class="sub">업로드일(4/30)~현재(6/12). 일일 조회수는 '일일 댓글수 × 댓글계수(809.6뷰/댓글) + 기초 600뷰' 모델로 역산, 6/12 실측 스냅샷으로 보정</div>
+<canvas id="viewChart"></canvas>
+<div class="note">⚠️ 6/12을 제외한 일자별 수치는 댓글 발생 패턴 기반 <b>추정치</b>입니다. 정확한 일별 조회수는 채널 소유자의 YouTube Studio 데이터로만 확인 가능합니다. 모니터링 스크립트가 쌓는 실측 스냅샷이 늘어날수록 추정이 실측으로 대체됩니다.</div>
+</div>
+
+<div class="grid2">
+<div class="card"><h2>💬 댓글 감성 분포</h2><div class="sub">최상위 댓글 1,911개 룰베이스 감성분류</div><canvas id="sentiChart"></canvas></div>
+<div class="card"><h2>🗓️ 일자별 댓글량 · 긍/부정</h2><div class="sub">화제성(버즈) 추이 — 5/1~5/3 집중 발생</div><canvas id="dailyChart"></canvas></div>
+</div>
+
+<div class="grid2">
+<div class="card"><h2>🔑 댓글 키워드 TOP 15</h2><div class="sub">"도대체 (장혁을) 얼마나 좋아하면/얼마를 줬으면" 밈 형태의 반응이 주류</div>
+<table><tr><th>#</th><th>키워드</th><th>빈도</th></tr><tr><td>1</td><td>좋아</td><td>195</td></tr><tr><td>2</td><td>지마켓</td><td>163</td></tr><tr><td>3</td><td>얼마나</td><td>105</td></tr><tr><td>4</td><td>광고</td><td>93</td></tr><tr><td>5</td><td>장혁</td><td>91</td></tr><tr><td>6</td><td>추노</td><td>44</td></tr><tr><td>7</td><td>조아</td><td>34</td></tr><tr><td>8</td><td>광고를</td><td>28</td></tr><tr><td>9</td><td>대길이</td><td>28</td></tr><tr><td>10</td><td>G마켓</td><td>27</td></tr><tr><td>11</td><td>이게</td><td>26</td></tr><tr><td>12</td><td>다시</td><td>26</td></tr><tr><td>13</td><td>미쳤다</td><td>25</td></tr><tr><td>14</td><td>도대체</td><td>24</td></tr><tr><td>15</td><td>보고</td><td>23</td></tr></table></div>
+<div class="card"><h2>👍 인기 댓글 TOP 10</h2><div class="sub">좋아요 순</div>
+<table><tr><th>작성자</th><th>댓글</th><th>좋아요</th><th>감성</th></tr><tr><td>@clancykim98</td><td>다음엔 권상우로 가자  사랑은 돌아오는 거야! 사랑은 돌문어 오는 거야! 사랑은 돌돌이 청소기야! 배송은 내일오는 거야!</td><td class='num'>3,991</td><td><span class='tag pos'>긍정</span></td></tr><tr><td>@세최미-j3s</td><td>컬말아좋아 미쳤낰ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ</td><td class='num'>2,501</td><td><span class='tag pos'>긍정</span></td></tr><tr><td>@bjh-</td><td>내가 잘못 봤나 싶었네 ㅋㅋㅋㅋㅋ 14년전이 아니고 14시간 전이었네 ㅋㅋㅋ</td><td class='num'>2,011</td><td><span class='tag pos'>긍정</span></td></tr><tr><td>@중년톡톡TV</td><td>도대체...광고비를 얼마를받은거얔ㅋㅋㅋㅋㅋ</td><td class='num'>1,741</td><td><span class='tag pos'>긍정</span></td></tr><tr><td>@피치햄-s8v</td><td>아놔 대길이형 ㅋㅋㅋㅋㅋㅋㅋㅋㅋ 오랜만에 봐서 얼마나 좋아 ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ</td><td class='num'>1,379</td><td><span class='tag pos'>긍정</span></td></tr><tr><td>@gas580</td><td>알았어요 살께살께 ㅋㅋㅋㅋㅋ</td><td class='num'>1,320</td><td><span class='tag pos'>긍정</span></td></tr><tr><td>@bigbearbeef</td><td>컬말아좋아는 어떤놈아이디어냨ㅋㅋㅋㅋ  짬뽕먹다 코로들어갔네 아 도랐네진짴ㅋㅋㅋㅋㅋ</td><td class='num'>1,264</td><td><span class='tag pos'>긍정</span></td></tr><tr><td>@친일파척결수거</td><td>천만감독 되어서 연기파 배우잡도리 ㅋㅋㅋㅋㅋ</td><td class='num'>1,010</td><td><span class='tag pos'>긍정</span></td></tr><tr><td>@파그마드라</td><td>방심하고 보다가 알에서 터지고 건조기에서 오열함..ㅋㅋ</td><td class='num'>992</td><td><span class='tag pos'>긍정</span></td></tr><tr><td>@봐요썸넬만</td><td>재미도 있지만 저게 16여년전 작품인데  그 상태 유지하는 장혁 배우의 모습이 너무나 멋지다.</td><td class='num'>867</td><td><span class='tag pos'>긍정</span></td></tr></table></div>
+</div>
+
+<div class="card insight">
+<h2>🧭 PR 효과 해석 (인사이트)</h2>
+<ul>
+<li><b>버즈는 캠페인 본행사 이전에 폭발</b> — 댓글의 64%가 업로드 후 4일(4/30~5/3)에 집중. 티저형 콘텐츠가 빅스마일데이(5/6 시작) 전 기대감 조성에 성공한 구조.</li>
+<li><b>광고 회피가 아닌 '광고를 찾아보는' 반응</b> — 긍정 66% vs 부정 1.2%. "광고를 다시 찾아봄", "풀버전 내놔라" 류 반응은 브랜디드 콘텐츠로서 최상급 수용도.</li>
+<li><b>모델(장혁)·연출(장항준) 화제성이 브랜드 화제성을 견인</b> — 키워드 상위에 장혁(91)·추노(44)·장항준(19). 셀럽 IP 활용 캠페인의 전형적 성공 패턴이나, 브랜드 지목 언급(지마켓 163, G마켓 27)도 동반돼 브랜드 귀속이 양호.</li>
+<li><b>경쟁사 언급 출현</b> — '쿠팡'(20회) 비교 댓글 존재. 커머스 카테고리 내 상대 포지셔닝 모니터링 필요.</li>
+<li><b>롱테일 진입</b> — 현재 일일 +600뷰 수준으로 화제 사이클 종료. 후속 콘텐츠(비하인드, 배우 인터뷰)로 재점화하거나 차기 캠페인으로 전환할 시점.</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>🚀 확장 전개 — PR 측정·분석에서 가능한 것들</h2>
+<div class="sub">현재 파이프라인(수집 → 엑셀 → 분석 → 보고서)을 기반으로 확장 가능한 항목 리스트</div>
+<div class="ext">
+<div class="box"><h3>① 측정 지표 고도화</h3><ul>
+<li>시간대별 조회수 실측 누적 → 실제 성장곡선·반감기 산출</li>
+<li>참여율(ER)·좋아요율·댓글전환율의 경쟁사/업종 벤치마크 비교</li>
+<li>AVE(광고환산가치)·CPV 역산으로 PR 효과 금액화</li>
+<li>구독자 증가분과 영상 조회수 상관 분석</li></ul></div>
+<div class="box"><h3>② 분석 심화</h3><ul>
+<li>LLM 기반 감성·의도 분류(구매의향/팬덤/불만/문의) 정밀화</li>
+<li>토픽 모델링으로 댓글 주제 클러스터 자동 분류</li>
+<li>경쟁사(쿠팡·11번가) 캠페인 영상과 버즈 비교 대시보드</li>
+<li>부정 댓글 실시간 감지 → 위기 시그널 알림</li></ul></div>
+<div class="box"><h3>③ 채널 확장</h3><ul>
+<li>네이버 뉴스·블로그·커뮤니티 기사화 추적(이미 보유한 뉴스 크롤러 연계)</li>
+<li>인스타·X(트위터) 등 멀티채널 버즈 통합 측정</li>
+<li>노션 파트너사 모니터링 기록과 연동해 팀 단위 리포트 자동 생성</li>
+<li>웹메일/카드뉴스 형식으로 결과 자동 발행</li></ul></div>
+<div class="box"><h3>④ 자동화 파이프라인</h3><ul>
+<li>모니터링 스크립트 스케줄러 등록 → 일일 스냅샷 자동 적재</li>
+<li>임계치(조회수 급증, 부정 비율 상승) 도달 시 Slack 알림</li>
+<li>주간 PR 리포트(HTML/PPT) 자동 생성·메일 발송</li>
+<li>캠페인 종료 후 결과보고서 원클릭 생성 템플릿화</li></ul></div>
+</div>
+</div>
+
+<footer>데이터: gmarket_comments.xlsx (댓글 1,911건) · gmarket_monitoring.xlsx (실측 스냅샷 133건 + 일자별 추정) · 생성 2026-06-12</footer>
+</div>
+<script>
+const D={"dates": ["04-30", "05-01", "05-02", "05-03", "05-04", "05-05", "05-06", "05-07", "05-08", "05-09", "05-10", "05-11", "05-12", "05-13", "05-14", "05-15", "05-16", "05-17", "05-18", "05-19", "05-20", "05-21", "05-22", "05-23", "05-24", "05-25", "05-26", "05-27", "05-28", "05-29", "05-30", "05-31", "06-01", "06-02", "06-03", "06-04", "06-05", "06-06", "06-07", "06-08", "06-09", "06-10", "06-11", "06-12"], "dview": [8696, 207869, 462097, 317981, 158481, 83184, 38653, 49988, 45940, 35415, 22460, 20031, 11125, 19222, 7887, 10316, 14364, 11935, 4648, 4648, 5458, 3029, 2219, 2219, 2219, 600, 2219, 600, 1410, 2219, 2219, 1410, 600, 600, 2219, 600, 600, 1410, 1410, 600, 600, 1410, 2219, 568], "cview": [8696, 216565, 678662, 996643, 1155124, 1238308, 1276961, 1326949, 1372889, 1408304, 1430764, 1450795, 1461920, 1481142, 1489029, 1499345, 1513709, 1525644, 1530292, 1534940, 1540398, 1543427, 1545646, 1547865, 1550084, 1550684, 1552903, 1553503, 1554913, 1557132, 1559351, 1560761, 1561361, 1561961, 1564180, 1564780, 1565380, 1566790, 1568200, 1568800, 1569400, 1570810, 1573029, 1573597], "dcom": [10, 256, 570, 392, 195, 102, 47, 61, 56, 43, 27, 24, 13, 23, 9, 12, 17, 14, 5, 5, 6, 3, 2, 2, 2, 0, 2, 0, 1, 2, 2, 1, 0, 0, 2, 0, 0, 1, 1, 0, 0, 1, 2, 0], "kw": [["좋아", 195], ["지마켓", 163], ["얼마나", 105], ["광고", 93], ["장혁", 91], ["추노", 44], ["조아", 34], ["광고를", 28], ["대길이", 28], ["G마켓", 27], ["이게", 26], ["다시", 26], ["미쳤다", 25], ["도대체", 24], ["보고", 23]], "tc": [{"author": "@clancykim98", "text": "다음엔 권상우로 가자  사랑은 돌아오는 거야! 사랑은 돌문어 오는 거야! 사랑은 돌돌이 청소기야! 배송은 내일오는 거야!", "likes": 3991, "date": "2026-05-01", "senti": "긍정"}, {"author": "@세최미-j3s", "text": "컬말아좋아 미쳤낰ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ", "likes": 2501, "date": "2026-05-01", "senti": "긍정"}, {"author": "@bjh-", "text": "내가 잘못 봤나 싶었네 ㅋㅋㅋㅋㅋ 14년전이 아니고 14시간 전이었네 ㅋㅋㅋ", "likes": 2011, "date": "2026-05-01", "senti": "긍정"}, {"author": "@중년톡톡TV", "text": "도대체...광고비를 얼마를받은거얔ㅋㅋㅋㅋㅋ", "likes": 1741, "date": "2026-05-01", "senti": "긍정"}, {"author": "@피치햄-s8v", "text": "아놔 대길이형 ㅋㅋㅋㅋㅋㅋㅋㅋㅋ 오랜만에 봐서 얼마나 좋아 ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ", "likes": 1379, "date": "2026-05-01", "senti": "긍정"}, {"author": "@gas580", "text": "알았어요 살께살께 ㅋㅋㅋㅋㅋ", "likes": 1320, "date": "2026-05-01", "senti": "긍정"}, {"author": "@bigbearbeef", "text": "컬말아좋아는 어떤놈아이디어냨ㅋㅋㅋㅋ  짬뽕먹다 코로들어갔네 아 도랐네진짴ㅋㅋㅋㅋㅋ", "likes": 1264, "date": "2026-05-02", "senti": "긍정"}, {"author": "@친일파척결수거", "text": "천만감독 되어서 연기파 배우잡도리 ㅋㅋㅋㅋㅋ", "likes": 1010, "date": "2026-05-01", "senti": "긍정"}, {"author": "@파그마드라", "text": "방심하고 보다가 알에서 터지고 건조기에서 오열함..ㅋㅋ", "likes": 992, "date": "2026-04-30", "senti": "긍정"}, {"author": "@봐요썸넬만", "text": "재미도 있지만 저게 16여년전 작품인데  그 상태 유지하는 장혁 배우의 모습이 너무나 멋지다.", "likes": 867, "date": "2026-05-03", "senti": "긍정"}], "s": {"긍정": 1263, "부정": 22, "중립": 626}};
+new Chart(document.getElementById('viewChart'),{type:'bar',data:{labels:D.dates,datasets:[
+{label:'일일 조회수(추정)',data:D.dview,backgroundColor:D.dates.map((d,i)=>i===D.dates.length-1?'#f0b429':'#13c75a88'),yAxisID:'y'},
+{label:'누적 조회수',data:D.cview,type:'line',borderColor:'#0b3d20',borderWidth:2,pointRadius:0,yAxisID:'y1'}]},
+options:{responsive:true,interaction:{mode:'index'},scales:{y:{position:'left',title:{display:true,text:'일일'}},y1:{position:'right',grid:{drawOnChartArea:false},title:{display:true,text:'누적'}}}}});
+new Chart(document.getElementById('sentiChart'),{type:'doughnut',data:{labels:['긍정','중립','부정'],datasets:[{data:[D.s['긍정'],D.s['중립'],D.s['부정']],backgroundColor:['#13c75a','#b9c4d0','#e74c3c']}]},options:{plugins:{legend:{position:'bottom'}}}});
+new Chart(document.getElementById('dailyChart'),{type:'bar',data:{labels:D.dates,datasets:[
+{label:'댓글수',data:D.dcom,backgroundColor:'#5b8def'},
+]},options:{plugins:{legend:{position:'bottom'}},scales:{x:{ticks:{maxTicksLimit:12}}}}});
+</script></body></html>
