@@ -1,0 +1,347 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>특허 기반 TRM 분석 보고서 — 휴머노이드 액추에이터</title>
+<style>
+:root{--ink:#1a1a1a;--navy:#1F3864;--blue:#2E5496;--line:#e2e8f0;}
+*{box-sizing:border-box}html,body{margin:0}body{background:#525659;font-family:'맑은 고딕','Malgun Gothic',system-ui,sans-serif;color:var(--ink)}
+.bar{position:sticky;top:0;z-index:5;background:#2b2f33;color:#cfd4d9;padding:9px 18px;display:flex;gap:12px;align-items:center;font-size:13px}
+.bar b{color:#fff}.bar a.dl{margin-left:auto;background:#2563eb;color:#fff;text-decoration:none;border-radius:6px;padding:6px 14px;font-size:12.5px}
+.bar button{background:#3a3f44;color:#cfd4d9;border:1px solid #4a5057;border-radius:6px;padding:6px 12px;cursor:pointer;font-size:12.5px}
+.layout{display:flex;justify-content:center;gap:18px;padding:24px 16px 60px}
+.toc{position:sticky;top:70px;align-self:flex-start;width:235px;background:#fff;border-radius:8px;padding:14px;font-size:12.5px;max-height:calc(100vh - 100px);overflow:auto}
+.toc h4{margin:0 0 8px;font-size:12px;color:#64748b;letter-spacing:.04em}
+.toc a{display:block;color:#334155;text-decoration:none;padding:3px 0;line-height:1.35;padding-left:8px}
+.toc a:hover{color:var(--blue)}.toc a.t1{font-weight:700;margin-top:6px}.toc a.t2{padding-left:18px;color:#5b6573;font-size:12px}
+.paper{width:820px;max-width:100%;background:#fff;box-shadow:0 2px 14px rgba(0,0,0,.35);border-radius:2px;padding:62px 70px 80px}
+.cover{min-height:78vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border-bottom:1px solid var(--line);margin-bottom:30px;padding-bottom:40px}
+.cover p{margin:6px 0}.cover p:nth-child(1) strong{font-size:30px;color:var(--navy)}
+.cover p:nth-child(2){font-size:19px;color:#333}.cover p:nth-child(3){font-size:14px;color:#888}
+.cover p:nth-child(4),.cover p:nth-child(5){font-size:13px;color:#666;margin-top:18px}
+.paper h1{font-size:23px;color:var(--navy);border-bottom:2px solid var(--navy);padding-bottom:8px;margin:46px 0 18px}
+.paper h1:first-of-type{margin-top:0}
+.paper h2{font-size:18px;color:var(--blue);margin:26px 0 10px}
+.paper h3{font-size:15px;color:#333;margin:20px 0 8px}
+.paper p{font-size:14px;line-height:1.85;margin:10px 0;color:#222;text-align:justify}
+.paper table{border-collapse:collapse;width:100%;margin:14px 0;font-size:12.5px}
+.paper th,.paper td{border:1px solid #cfd9e6;padding:7px 9px;text-align:left;vertical-align:top}
+.paper tr:first-child td{background:var(--navy);color:#fff;font-weight:700}
+.paper tr.even td{background:#f4f7fb}.paper td strong{font-weight:700}
+.paper ul{margin:8px 0;padding-left:22px}.paper li{font-size:14px;line-height:1.7;margin:5px 0}
+@media print{body{background:#fff}.bar,.toc{display:none}.paper{box-shadow:none;width:auto;padding:0}}
+@media(max-width:900px){.toc{display:none}.paper{padding:40px 22px}}
+</style></head><body>
+<div class="bar"><b>특허 기반 TRM 분석 보고서</b> · 휴머노이드 액추에이터
+ <button onclick="window.print()">🖨 인쇄/PDF</button>
+ <a class="dl" href="data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,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" download="TRM_분석보고서.docx">⬇ docx 다운로드</a></div>
+<div class="layout"><nav class="toc"><h4>목차</h4><a class="t1" href="#h1">1. 전체 로드맵 특징</a>
+<a class="t2" href="#h2">1.1 구성요소별 출원 분포</a>
+<a class="t2" href="#h3">1.2 세대별 추이와 피인용 영향력</a>
+<a class="t2" href="#h4">1.3 주도 출원인</a>
+<a class="t2" href="#h5">1.4 구성요소 간 연계(공동설계 축)</a>
+<a class="t1" href="#h6">2. 세대 · 부품별 특징</a>
+<a class="t2" href="#h7">2.1 세대별 특징</a>
+<a class="t2" href="#h12">2.2 구성요소별 세대 진화 계보</a>
+<a class="t2" href="#h13">2.3 구성요소별 개발 목적(Lv3) 우선순위</a>
+<a class="t1" href="#h14">3. 핵심 · 유망 기술원리</a>
+<a class="t2" href="#h15">3.1 핵심·원천 특허 (피인용 상위)</a>
+<a class="t2" href="#h16">3.2 목적 달성 기술원리(Lv4)의 개발 순서</a>
+<a class="t2" href="#h17">3.3 유망 기술원리 · 화이트스페이스</a>
+<a class="t1" href="#h19">4. 시사점</a>
+<a class="t2" href="#h20">4.1 경쟁 구도 — 시스템 통합형 vs 핵심부품 전문형</a>
+<a class="t2" href="#h21">4.2 기술 궤적 — 부품 최적화에서 모듈·제어 일체화로</a>
+<a class="t2" href="#h23">4.3 진입 · 투자 시사점</a>
+<a class="t2" href="#h24">4.4 분석상 유의점</a></nav>
+ <main class="paper"><div class="cover"><p><strong>특허 기반 기술로드맵(TRM) 분석 보고서</strong></p>
+<p>휴머노이드 액추에이터 (Humanoid Actuator)</p>
+<p>통합모듈 · 감속기 · 모터 · 제어기</p>
+<p>분석 대상 특허 735건 · 다중매핑 864건 · 4개 구성요소 × 4세대</p>
+<p>2026년 6월</p>
+
+</div><h1 id="h1">1. 전체 로드맵 특징</h1>
+<p>본 분석은 휴머노이드 액추에이터 분야의 특허 735건을 4개 기술 구성요소(통합모듈·감속기·모터·제어기)와 4개 제품 세대(Gen1 유압/초기전동 → Gen2 하모닉 전동관절 → Gen3 준직접구동 QDD → Gen4 통합 관절모듈)의 격자 위에 매핑한 결과다. 한 특허가 여러 구성요소를 아우르는 경우(통합 드라이브·관절모듈 등)를 반영해 다중매핑을 허용했으며, 총 매핑 수는 864건, 분야를 가로지르는 융합 특허는 98건이다.</p>
+<h2 id="h2">1.1 구성요소별 출원 분포</h2>
+<p>출원은 감속기에 가장 집중(307건, 전체 매핑의 약 36%)되어 있고, 통합모듈(248), 제어기(180), 모터(129) 순이다. 감속기와 통합모듈이 전체의 약 2/3를 차지하여, 동력 전달과 관절 통합이 이 분야의 핵심 경쟁 영역임을 보여준다.</p>
+<table>
+<tbody>
+<tr class="odd">
+<td><strong>구성요소(Lv2)</strong></td>
+<td><strong>관련 특허</strong></td>
+<td><strong>비중</strong></td>
+<td><strong>성격</strong></td>
+</tr>
+<tr class="even">
+<td><strong>감속기</strong></td>
+<td>307</td>
+<td>36%</td>
+<td>하모닉·사이클로이드 동력전달 — 최대 경쟁영역</td>
+</tr>
+<tr class="odd">
+<td><strong>통합모듈</strong></td>
+<td>248</td>
+<td>29%</td>
+<td>관절·액추에이터 통합·구조 — 시스템화 축</td>
+</tr>
+<tr class="even">
+<td><strong>제어기</strong></td>
+<td>180</td>
+<td>21%</td>
+<td>엔코더·토크센싱·드라이버·제어</td>
+</tr>
+<tr class="odd">
+<td><strong>모터</strong></td>
+<td>129</td>
+<td>15%</td>
+<td>BLDC·팬케이크·권선·자석</td>
+</tr>
+</tbody>
+</table>
+<h2 id="h3">1.2 세대별 추이와 피인용 영향력</h2>
+<p>출원 건수는 Gen1(306) → Gen2(216) → Gen3(274)로 이어지며 Gen4(68)는 2025년 이후라 아직 적다. 반면 누적 피인용(영향력)은 초기 세대에 강하게 쏠려 Gen1 571 → Gen2 262 → Gen3 147 → Gen4 8로 감소한다. 즉 최근 세대일수록 출원은 늘지만 피인용이 누적될 시간이 짧아, 초기 감속기 특허들이 여전히 기술 영향력의 중심에 있다.</p>
+<table>
+<tbody>
+<tr class="odd">
+<td><strong>세대(Lv1)</strong></td>
+<td><strong>기간</strong></td>
+<td><strong>출원</strong></td>
+<td><strong>누적 피인용</strong></td>
+<td><strong>대표 영향 영역</strong></td>
+</tr>
+<tr class="even">
+<td><strong>Gen1 유압/초기전동</strong></td>
+<td>2010–2017</td>
+<td>306</td>
+<td>571</td>
+<td>감속기 고감속비 하모닉(189)</td>
+</tr>
+<tr class="odd">
+<td><strong>Gen2 하모닉 전동관절</strong></td>
+<td>2018–2021</td>
+<td>216</td>
+<td>262</td>
+<td>감속기 경량 하모닉(85)</td>
+</tr>
+<tr class="even">
+<td><strong>Gen3 준직접구동 QDD</strong></td>
+<td>2022–2024</td>
+<td>274</td>
+<td>147</td>
+<td>통합모듈 자기수용 모듈(101)</td>
+</tr>
+<tr class="odd">
+<td><strong>Gen4 통합 관절모듈</strong></td>
+<td>2025–2028</td>
+<td>68</td>
+<td>8</td>
+<td>제어기 통합드라이버·센서리스(5)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="h4">1.3 주도 출원인</h2>
+<p>상위 출원인은 시스템·부품 진영으로 뚜렷이 갈린다. 상하이 푸리에(114)는 통합모듈·제어 중심의 시스템 통합형, 나브테스코(112)·타마가와 세이키(60)·니덱-심포(32)는 각각 감속기·제어기(리졸버)·감속기의 핵심부품 전문형이다. 중국계·일본계·대만계·구미계가 분야별로 포진해 있다.</p>
+<table>
+<tbody>
+<tr class="odd">
+<td><strong>순위</strong></td>
+<td><strong>출원인</strong></td>
+<td><strong>건수</strong></td>
+<td><strong>주력</strong></td>
+</tr>
+<tr class="even">
+<td><strong>1</strong></td>
+<td>Shanghai Fourier Intelligence</td>
+<td>114</td>
+<td>통합모듈·제어 (시스템)</td>
+</tr>
+<tr class="odd">
+<td><strong>2</strong></td>
+<td>Nabtesco</td>
+<td>112</td>
+<td>감속기 (사이클로이드/RV)</td>
+</tr>
+<tr class="even">
+<td><strong>3</strong></td>
+<td>Tamagawa Seiki</td>
+<td>60</td>
+<td>제어기 (리졸버)</td>
+</tr>
+<tr class="odd">
+<td><strong>4</strong></td>
+<td>Nidec-Shimpo</td>
+<td>32</td>
+<td>감속기</td>
+</tr>
+<tr class="even">
+<td><strong>5</strong></td>
+<td>Zhejiang Laifual</td>
+<td>26</td>
+<td>감속기 (하모닉)</td>
+</tr>
+<tr class="odd">
+<td><strong>6</strong></td>
+<td>Hiwin Technology</td>
+<td>25</td>
+<td>감속기·선형</td>
+</tr>
+<tr class="even">
+<td><strong>7</strong></td>
+<td>Zhejiang Sanhua</td>
+<td>20</td>
+<td>통합모듈·구동</td>
+</tr>
+<tr class="odd">
+<td><strong>8</strong></td>
+<td>Agility / Wittenstein / Moog</td>
+<td>15·14·10</td>
+<td>통합·감속·제어</td>
+</tr>
+</tbody>
+</table>
+<h2 id="h5">1.4 구성요소 간 연계(공동설계 축)</h2>
+<p>로드맵은 세 개의 분야 간 연계를 드러낸다: ① 저감속비 QDD 감속기 ↔︎ 고토크 팬케이크 모터의 공동설계, ② 통합 관절모듈 ↔︎ 통합 드라이버·센서리스 제어의 패키징, ③ 감속기의 토크 투명성 ↔︎ 센서리스 토크추정. 세 연계 모두 Gen3~Gen4 구간에 집중되어, 부품 개별 최적화에서 모듈 통합·제어 일체화로 무게중심이 이동하고 있음을 보여준다.</p>
+<h1 id="h6">2. 세대 · 부품별 특징</h1>
+<p>본 장은 (1) 각 세대의 기술 분기점과 핵심 출원인, (2) 각 구성요소의 세대별 진화 계보를 정리한다.</p>
+<h2 id="h7">2.1 세대별 특징</h2>
+<h3 id="h8">Gen1 · 유압/초기 전동 (2010–2017)</h3>
+<p>피인용 영향력이 가장 큰 세대(571). 산업용 고감속비 하모닉 드라이브가 영향력의 중심(189 피인용)이며, 중공·고하중 하모닉 구조와 외골격 재활로봇이 핵심 출원이다. 핵심·원천 특허로는 무그(MOOG)의 햅틱 인터페이스(60), 상하이 ZD메드텍의 외골격 상지재활로봇(46), 리더드라이브의 단배럴 고하중 중공 하모닉(12)이 있다.</p>
+<h3 id="h9">Gen2 · 하모닉 전동 관절 (2018–2021)</h3>
+<p>경량 하모닉 드라이브가 영향력의 중심(85 피인용). 치형 최적화(아크 사이클로이드 하모닉 치형), 절대 엔코더+서보 드라이버, 진동억제 제어가 부상한다. 부품의 경량·정밀화와 제어 고도화가 동시에 진행된 전환기다.</p>
+<h3 id="h10">Gen3 · 준직접구동 QDD (2022–2024)</h3>
+<p>무게중심이 부품에서 모듈로 이동한 세대. 통합모듈의 자기수용형(proprioceptive) 액추에이터 모듈이 영향력 1위(101 피인용)이며, 저감속비 사이클로이드/QDD 감속기, 대직경 팬케이크 BLDC, 듀얼 엔코더 자기수용 제어가 함께 등장해 공동설계 연계가 본격화된다.</p>
+<h3 id="h11">Gen4 · 통합 관절모듈 (2025–2028)</h3>
+<p>최신·신생 세대(누적 피인용 8). 완전통합 관절모듈+유성 롤러스크류, 고효율 코어리스/팬케이크 BLDC(&gt;90%), 통합 드라이버+센서리스 토크추정이 핵심이다. 출원이 적어 화이트스페이스가 크며 향후 경쟁의 진입점이 된다.</p>
+<h2 id="h12">2.2 구성요소별 세대 진화 계보</h2>
+<table>
+<tbody>
+<tr class="odd">
+<td><strong>구성요소</strong></td>
+<td><strong>Gen1</strong></td>
+<td><strong>Gen2</strong></td>
+<td><strong>Gen3</strong></td>
+<td><strong>Gen4</strong></td>
+</tr>
+<tr class="even">
+<td><strong>통합모듈</strong></td>
+<td>분리형 관절</td>
+<td>반통합 유닛(볼스크류)</td>
+<td>자기수용 모듈</td>
+<td>완전통합+롤러스크류</td>
+</tr>
+<tr class="odd">
+<td><strong>감속기</strong></td>
+<td>고감속비 하모닉</td>
+<td>경량 하모닉</td>
+<td>저감속비 사이클로이드/QDD</td>
+<td>통합형 사이클로이드/유성</td>
+</tr>
+<tr class="even">
+<td><strong>모터</strong></td>
+<td>브러시드/초기 BLDC</td>
+<td>프레임리스 BLDC</td>
+<td>팬케이크 BLDC(QDD)</td>
+<td>고효율 코어리스(&gt;90%)</td>
+</tr>
+<tr class="odd">
+<td><strong>제어기</strong></td>
+<td>증분엔코더+외장토크센서</td>
+<td>절대엔코더+서보드라이버</td>
+<td>듀얼엔코더 자기수용</td>
+<td>통합드라이버+센서리스토크</td>
+</tr>
+</tbody>
+</table>
+<p>세대 전이의 성격을 보면, 감속기는 Gen2→Gen3에서 하모닉에서 저감속비 사이클로이드/QDD로의 ‘대체(불연속)’가 일어났고, 제어기·통합모듈은 Gen3→Gen4에서 센서리스·완전통합이라는 ‘신규도입’이 나타난다. 모터는 전 세대에 걸쳐 ‘연속진화’(토크밀도·효율 개선)다.</p>
+<h2 id="h13">2.3 구성요소별 개발 목적(Lv3) 우선순위</h2>
+<p>감속기는 강성·정밀도와 치형설계가 초기에 집중되고 수명·양산성이 후반에 다뤄진다. 모터는 토크밀도가 먼저, 효율·저토크리플이 가장 늦게 부상한다. 제어기는 위치센싱(엔코더/리졸버)이 선행하고 토크센싱·센서리스가 최근 과제다. 통합모듈은 구동동력 확보·자유도가 먼저, 고집적·경량·내구가 최근 집중된다.</p>
+<h1 id="h14">3. 핵심 · 유망 기술원리</h1>
+<p>본 장은 (1) 피인용·패밀리 기반 핵심·원천 특허, (2) 목적 달성 기술원리(Lv4)의 개발 순서, (3) 화이트스페이스 기반 유망 영역을 다룬다.</p>
+<h2 id="h15">3.1 핵심·원천 특허 (피인용 상위)</h2>
+<p>세그먼트별 핵심특허는 16건이며 피인용 상위는 다음과 같다. 제어(햅틱·진동억제)와 감속기(하모닉·사이클로이드 치형), 통합모듈(외골격)이 원천성을 형성한다.</p>
+<table>
+<tbody>
+<tr class="odd">
+<td><strong>특허번호</strong></td>
+<td><strong>구성요소·세대</strong></td>
+<td><strong>피인용</strong></td>
+<td><strong>핵심 내용</strong></td>
+</tr>
+<tr class="even">
+<td><strong>US8716973</strong></td>
+<td>제어기·Gen1</td>
+<td>60</td>
+<td>햅틱 사용자 인터페이스 (MOOG)</td>
+</tr>
+<tr class="odd">
+<td><strong>CN105662783B</strong></td>
+<td>통합모듈·Gen1</td>
+<td>46</td>
+<td>외골격 상지재활 로봇 (Shanghai ZD)</td>
+</tr>
+<tr class="even">
+<td><strong>CN109664297A</strong></td>
+<td>제어기·Gen2</td>
+<td>25</td>
+<td>로봇 진동억제 방법·시스템 (Inovance)</td>
+</tr>
+<tr class="odd">
+<td><strong>CN112283317A</strong></td>
+<td>감속기·Gen2</td>
+<td>12</td>
+<td>아크 사이클로이드 하모닉 치형 (Wuhan Tech)</td>
+</tr>
+<tr class="even">
+<td><strong>CN102889344A</strong></td>
+<td>감속기·Gen1</td>
+<td>12</td>
+<td>단배럴 고하중 중공 하모닉 (Leaderdrive)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="h16">3.2 목적 달성 기술원리(Lv4)의 개발 순서</h2>
+<p>각 구성요소에서 ‘[수단]을 통한 [목적] 확보/개선’ 형태의 기술원리가 언제 우선 개발됐는지(우선일 중앙값 기준)를 보면 개발 우선순위가 드러난다.</p>
+<table>
+<tbody>
+<tr class="odd">
+<td><strong>구성요소</strong></td>
+<td><strong>우선 개발 기술원리 (중앙값 연도)</strong></td>
+</tr>
+<tr class="even">
+<td><strong>감속기</strong></td>
+<td>편심요동·사이클로이드 기구를 통한 고토크 전달(2014) → 예압·지지 강화를 통한 강성(2015) → 백래시 저감을 통한 전달정확도(2016)</td>
+</tr>
+<tr class="odd">
+<td><strong>모터</strong></td>
+<td>자석 고정·로터 구조 개선을 통한 고속 신뢰성(2017) → 코어리스·슬롯리스 권선을 통한 코깅저감·효율(2017) → 센서·드라이버 통합을 통한 제어 일체형(2018)</td>
+</tr>
+<tr class="even">
+<td><strong>제어기</strong></td>
+<td>절대·리졸버 엔코더를 통한 위치검출 정확도(2016) → 토크센서 집적을 통한 토크검출(2020) → 센서리스 전류기반 토크추정(2020)</td>
+</tr>
+<tr class="odd">
+<td><strong>통합모듈</strong></td>
+<td>볼/리드 스크류를 통한 전기기계식 선형구동(2016) → 재활·근력보조 구동을 통한 동력보조(2018) → 단일 하우징 고집적·경량(최근)</td>
+</tr>
+</tbody>
+</table>
+<p>공통 패턴은 ‘동력·정확도 확보 → 신뢰성·효율 → 통합·양산’의 순서다. 감속기는 동력전달·강성을 먼저 확보하고 수명·양산을 뒤에 다뤘고, 제어기는 위치센싱에서 센서리스 토크추정으로, 통합모듈은 선형구동·동력보조에서 고집적·경량으로 이동했다.</p>
+<h2 id="h17">3.3 유망 기술원리 · 화이트스페이스</h2>
+<h3 id="h18">Gen4(2025~)는 출원이 희소해 진입 기회가 크다. 정량적으로 출원이 가장 적은 영역은 ‘모터 Gen4 고효율 코어리스/팬케이크 BLDC(&gt;90%)’(2건)와 ‘감속기 Gen4 통합형 사이클로이드/유성 감속기’(3건)다. 또한 제어기의 ‘센서리스 전류기반 토크추정’과 통합모듈의 ‘유성 롤러스크류 선형구동·단일 하우징 고집적’은 영향력 누적 전 초기 단계로 선점 가치가 높은 유망 원리다.</h3>
+<ul>
+<li><p>모터 Gen4: 고효율 코어리스/팬케이크 BLDC(&gt;90%) — 출원 2건, 효율 한계 돌파의 핵심</p></li>
+<li><p>감속기 Gen4: 통합형 사이클로이드/유성 감속기 — 출원 3건, 모듈 일체화의 부품 축</p></li>
+<li><p>제어기 Gen4: 센서리스 전류기반 토크추정 — 토크센서 제거로 원가/신뢰성 동시 개선</p></li>
+<li><p>통합모듈 Gen4: 유성 롤러스크류 선형구동 + 단일 하우징 고집적 — 양산형 관절모듈의 핵심</p></li>
+</ul>
+<h1 id="h19">4. 시사점</h1>
+<h2 id="h20">4.1 경쟁 구도 — 시스템 통합형 vs 핵심부품 전문형</h2>
+<p>출원 분포는 두 진영을 뚜렷이 보여준다. 상하이 푸리에처럼 통합모듈·제어에 집중한 ‘시스템 통합형’은 부품(감속기·모터)을 외부 조달할 가능성이 크고, 나브테스코·타마가와·니덱처럼 부품에 집중한 ‘핵심부품 전문형’은 모듈화 흐름에서 공급자 지위를 노린다. 향후 경쟁은 통합모듈 진영의 부품 내재화, 부품 진영의 모듈·제어 확장에서 갈린다.</p>
+<h2 id="h21">4.2 기술 궤적 — 부품 최적화에서 모듈·제어 일체화로</h2>
+<h3 id="h22">Gen1~Gen2는 감속기·모터의 부품 최적화(고감속비·경량·치형·강성)가 주도했고, Gen3부터 자기수용형 모듈·QDD·듀얼엔코더가 부상하며 부품 간 공동설계(저감속비 감속기 ↔︎ 고토크 모터)가 본격화됐다. Gen4는 완전통합 관절모듈·센서리스 제어로 ‘부품을 통합하고 센서를 줄이는’ 방향이 분명하다. 피인용 영향력은 여전히 초기 감속기에 있으나 출원의 무게중심은 통합·제어로 이동 중이다.</h3>
+<h2 id="h23">4.3 진입 · 투자 시사점</h2>
+<ul>
+<li><p>선점 후보: Gen4의 희소 영역(고효율 BLDC, 통합형 감속기, 센서리스 토크추정, 롤러스크류 모듈)은 영향력 누적 전 단계로 특허 선점 가치가 높다.</p></li>
+<li><p>공동설계 연계 주목: ‘저감속비 감속기↔︎고토크 모터’, ‘통합모듈↔︎센서리스 제어’ 축은 시스템 특허로 묶일 가능성이 커 회피·라이선스 설계가 필요하다.</p></li>
+<li><p>핵심·원천 대응: 제어(햅틱·진동억제)와 감속기(하모닉·사이클로이드 치형)의 고피인용 원천 특허는 인용망 심층분석으로 회피 경로를 확보한다.</p></li>
+<li><p>출원인 모니터링: 시스템 통합형(푸리에)의 부품 내재화 출원과 부품 전문형(나브테스코·타마가와)의 모듈·제어 확장 출원 추적으로 경쟁 구도 변화를 조기 포착한다.</p></li>
+</ul>
+<h2 id="h24">4.4 분석상 유의점</h2>
+<p>본 결과는 자동 분류(판단형 + 키워드 보조)에 기반하며, 저신뢰·경계 특허 166건은 검토 큐로 분리되어 있다. 휴머노이드 본체 구조·소프트 제어 등 스코프 경계 특허의 포함 여부, 핵심특허의 인용망 검증, 동일 그룹의 표기 분리(예: 푸리에 3개 법인명) 통합은 후속 검증 과제다.</p>
+</main></div></body></html>
